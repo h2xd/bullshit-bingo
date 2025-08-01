@@ -80,7 +80,7 @@ function shuffleItemsKeepingCenter(items: string[]): string[] {
   return shuffled;
 }
 
-export function createGame(title: string, items: string[]): BingoGame {
+export function createGame(title: string, items: string[], imported: boolean = false): BingoGame {
   if (items.length !== 25) {
     throw new Error('Game must have exactly 25 items');
   }
@@ -92,7 +92,7 @@ export function createGame(title: string, items: string[]): BingoGame {
   const shuffledItems = shuffleItemsKeepingCenter(items);
 
   const now = Date.now();
-  return {
+  const game: BingoGame = {
     id: uuidv4(),
     title,
     items: shuffledItems,
@@ -100,6 +100,12 @@ export function createGame(title: string, items: string[]): BingoGame {
     lastPlayed: now,
     playCount: 0
   };
+
+  if (imported) {
+    game.imported = true;
+  }
+
+  return game;
 }
 
 // Game state management

@@ -5,6 +5,7 @@ export interface BingoGame {
   createdAt: number;       // Unix timestamp
   lastPlayed: number;      // Unix timestamp
   playCount: number;       // Times played
+  imported?: boolean;      // Whether this game was imported from a share
 }
 
 export interface GameState {

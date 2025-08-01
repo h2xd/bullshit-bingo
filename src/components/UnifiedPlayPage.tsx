@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { BingoCard } from '@/components/BingoCard';
 import { ShareDialog } from '@/components/ShareDialog';
 import { BingoGame, GameState } from '@/lib/types';
-import { getGame } from '@/lib/storage';
+import { getGame, saveGame } from '@/lib/storage';
 import { decodeGameFromUrl, isValidEncodedGame } from '@/lib/urlEncoding';
 import { createGame } from '@/lib/storage';
 
@@ -35,10 +35,12 @@ export function UnifiedPlayPage({ encodedData, gameId }: UnifiedPlayPageProps) {
           }
 
           const shareableGame = decodeGameFromUrl(encodedData);
-          const tempGame = createGame(shareableGame.title, shareableGame.items);
-          tempGame.id = 'shared-' + btoa(JSON.stringify(shareableGame)).substring(0, 8);
+          const importedGame = createGame(shareableGame.title, shareableGame.items, true);
+          
+          // Save the imported game to local storage
+          saveGame(importedGame);
 
-          setGame(tempGame);
+          setGame(importedGame);
           setIsSharedGame(true);
           return;
         }
