@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { BingoCard } from '@/components/BingoCard';
 import { ShareDialog } from '@/components/ShareDialog';
@@ -16,6 +17,7 @@ interface UnifiedPlayPageProps {
 }
 
 export function UnifiedPlayPage({ encodedData, gameId }: UnifiedPlayPageProps) {
+  const router = useRouter();
   const [game, setGame] = useState<BingoGame | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,8 +42,8 @@ export function UnifiedPlayPage({ encodedData, gameId }: UnifiedPlayPageProps) {
           // Save the imported game to local storage
           saveGame(importedGame);
 
-          setGame(importedGame);
-          setIsSharedGame(true);
+          // Redirect to the imported game
+          router.replace(`/play/${importedGame.id}`);
           return;
         }
 
