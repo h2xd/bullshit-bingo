@@ -50,6 +50,36 @@ export function deleteGame(gameId: string): void {
   }
 }
 
+function shuffleItemsKeepingCenter(items: string[]): string[] {
+  if (items.length !== 25) {
+    return items;
+  }
+
+  const shuffled = [...items];
+  const centerItem = shuffled[12];
+  
+  // Create arrays of non-center items with their original indices
+  const nonCenterItems = shuffled.filter((_, index) => index !== 12);
+  
+  // Shuffle the non-center items using Fisher-Yates algorithm
+  for (let i = nonCenterItems.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [nonCenterItems[i], nonCenterItems[j]] = [nonCenterItems[j], nonCenterItems[i]];
+  }
+  
+  // Rebuild the array with shuffled items and original center
+  let nonCenterIndex = 0;
+  for (let i = 0; i < 25; i++) {
+    if (i === 12) {
+      shuffled[i] = centerItem;
+    } else {
+      shuffled[i] = nonCenterItems[nonCenterIndex++];
+    }
+  }
+  
+  return shuffled;
+}
+
 export function createGame(title: string, items: string[]): BingoGame {
   if (items.length !== 25) {
     throw new Error('Game must have exactly 25 items');
@@ -59,11 +89,13 @@ export function createGame(title: string, items: string[]): BingoGame {
     throw new Error('Game title must be 100 characters or less');
   }
 
+  const shuffledItems = shuffleItemsKeepingCenter(items);
+
   const now = Date.now();
   return {
     id: uuidv4(),
     title,
-    items,
+    items: shuffledItems,
     createdAt: now,
     lastPlayed: now,
     playCount: 0
